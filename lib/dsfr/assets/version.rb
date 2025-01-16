@@ -2,6 +2,6 @@
 
 module Dsfr
   module Assets
-    VERSION = "0.1"
+    VERSION = "1.13.0"
   end
 end
