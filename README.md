@@ -10,6 +10,11 @@ Le numéro de version correspond aux [versions du DSFR](https://github.com/Gouve
 bundle add dsfr-assets
 ```
 
+```ruby
+# config/application.rb
+
+require 'dsfr/assets'
+```
 ## Usage
 
 Dans votre template/layout :
