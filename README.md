@@ -24,3 +24,9 @@ Dans votre template/layout :
 <%= javascript_include_tag "dsfr.module.min.js", type: 'module' %>
 <%= javascript_include_tag "dsfr.nomodule.min.js", nomodule: true %>
 ```
+
+Si vous utilisez les icônes/pictogrammes, rajoutez :
+
+```erb
+<%= stylesheet_link_tag "utility/dsfr-utility.min", "application-turbo-track": "reload" %>
+```
