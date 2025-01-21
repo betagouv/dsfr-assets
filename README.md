@@ -30,3 +30,8 @@ Si vous utilisez les icônes/pictogrammes, rajoutez :
 ```erb
 <%= stylesheet_link_tag "utility/dsfr-utility.min", "application-turbo-track": "reload" %>
 ```
+
+## Déploiement
+
+Pour déployer il suffit de mettre la bonne version dans `version.rb`
+puis d'utiliser `bundle exec rake release`.
