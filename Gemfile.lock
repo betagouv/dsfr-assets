@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dsfr-assets (0.1.0)
+    dsfr-assets (1.13.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -43,6 +43,10 @@ GEM
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.37.0)
       parser (>= 3.3.1.0)
+    rubocop-rake (0.6.0)
+      rubocop (~> 1.0)
+    rubocop-rspec (3.4.0)
+      rubocop (~> 1.61)
     ruby-progressbar (1.13.0)
     unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
@@ -57,6 +61,8 @@ DEPENDENCIES
   rake (~> 13.0)
   rspec (~> 3.0)
   rubocop (~> 1.21)
+  rubocop-rake
+  rubocop-rspec
 
 BUNDLED WITH
    2.6.2
