@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dsfr-assets (1.13.2)
+    dsfr-assets (1.14.0)
 
 GEM
   remote: https://rubygems.org/
