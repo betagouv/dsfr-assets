@@ -8,43 +8,56 @@ module Dsfr
     class LicenseError < StandardError; end
 
     class << self
-      attr_writer :accept_license
-
-      def license_accepted?
-        ENV["DSFR_ACCEPT_LICENSE"] == "1" || @accept_license == CGU_VERSION
-      end
+      attr_writer :accepted_license_version
 
       def cgu_url
         "https://github.com/GouvernementFR/dsfr/blob/v#{VERSION}/doc/legal/cgu.md"
       end
 
       def check_license!
-        return if license_accepted?
+        return if license_env_bypass?
 
-        raise LicenseError, missing_license_message if @accept_license.nil?
-
-        raise LicenseError, outdated_license_message
+        if @accepted_license_version.nil?
+          raise LicenseError, missing_license_message
+        elsif @accepted_license_version != CGU_VERSION
+          raise LicenseError, license_version_mismatch_message(@accepted_license_version)
+        end
       end
 
       private
 
+      def license_env_bypass?
+        ENV["DSFR_ACCEPT_LICENSE"] == "1"
+      end
+
       def missing_license_message
         <<~MSG
-          [DSFR] Vous devez accepter les modalités d'utilisation du DSFR (v#{CGU_VERSION}).
-          Lisez-les ici : #{cgu_url}
+
+          [dsfr-assets] Vous devez accepter les modalités
+          d'utilisation du DSFR (v#{CGU_VERSION}).
+
+          Lisez-les ici :
+
+          #{cgu_url}
+
           Puis ajoutez dans un initializer Rails :
-            Dsfr::Assets.accept_license = "#{CGU_VERSION}"
-          Ou définissez la variable d'environnement DSFR_ACCEPT_LICENSE=1.
+            Dsfr::Assets.accepted_license_version = "#{CGU_VERSION}"
         MSG
       end
 
-      def outdated_license_message
+      def license_version_mismatch_message(version)
         <<~MSG
-          [DSFR] La version des modalités d'utilisation acceptée ("#{@accept_license}") ne correspond pas
-          à la version requise ("#{CGU_VERSION}").
-          Lisez la nouvelle version ici : #{cgu_url}
+
+          [DSFR] La version des modalités d'utilisation acceptée
+          ("#{version}") ne correspond pas à la
+          version requise ("#{CGU_VERSION}").
+
+          Lisez la nouvelle version ici :
+
+          #{cgu_url}
+
           Puis mettez à jour votre initializer :
-            Dsfr::Assets.accept_license = "#{CGU_VERSION}"
+            Dsfr::Assets.accepted_license_version = "#{CGU_VERSION}"
         MSG
       end
     end
