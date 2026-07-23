@@ -9,54 +9,45 @@ RSpec.describe Dsfr::Assets do
     expect(described_class::CGU_VERSION).not_to be_nil
   end
 
-  describe ".license_accepted?" do
-    before { described_class.accept_license = nil }
-    after  { described_class.accept_license = nil }
+  describe "check_license!" do
+    before { described_class.accepted_license_version = nil }
 
-    it "returns false when nothing is configured" do
-      expect(described_class.license_accepted?).to be false
-    end
-
-    it "returns true when the correct CGU version is set" do
-      described_class.accept_license = described_class::CGU_VERSION
-      expect(described_class.license_accepted?).to be true
-    end
-
-    it "returns false when an outdated CGU version is set" do
-      described_class.accept_license = "0.0.1"
-      expect(described_class.license_accepted?).to be false
-    end
-
-    context "with DSFR_ACCEPT_LICENSE=1" do
-      around do |example|
-        ENV["DSFR_ACCEPT_LICENSE"] = "1"
-        example.run
-      ensure
-        ENV.delete("DSFR_ACCEPT_LICENSE")
+    context "when the correct version has been accepted" do
+      before do
+        described_class.accepted_license_version = described_class::CGU_VERSION
       end
 
-      it "returns true regardless of accept_license" do
-        expect(described_class.license_accepted?).to be true
+      it "does not raise" do
+        expect { described_class.check_license! }.not_to raise_error
       end
     end
-  end
 
-  describe ".check_license!" do
-    before { described_class.accept_license = nil }
-    after  { described_class.accept_license = nil }
+    context "when the accepted license version hasn't been set" do
+      before { described_class.accepted_license_version = nil }
 
-    it "raises LicenseError when license is not accepted" do
-      expect { described_class.check_license! }.to raise_error(described_class::LicenseError, /modalités d'utilisation/)
+      it "raises a LicenceError" do
+        expect { described_class.check_license! }
+          .to raise_error(Dsfr::Assets::LicenseError, /accepter les modalités/)
+      end
     end
 
-    it "raises LicenseError with version mismatch details" do
-      described_class.accept_license = "0.0.1"
-      expect { described_class.check_license! }.to raise_error(described_class::LicenseError, /ne correspond pas/)
+    context "when the accepted license version doesn't match the current one" do
+      before { described_class.accepted_license_version = "foobar" }
+
+      it "raises a LicenseError" do
+        expect { described_class.check_license! }
+          .to raise_error(described_class::LicenseError, /ne correspond pas/)
+      end
     end
 
-    it "does not raise when the correct CGU version is set" do
-      described_class.accept_license = described_class::CGU_VERSION
-      expect { described_class.check_license! }.not_to raise_error
+    context "when the ENV bypass is used" do
+      before do
+        allow(ENV).to receive(:[]).with("DSFR_ACCEPT_LICENSE").and_return "1"
+      end
+
+      it "does not raise" do
+        expect { described_class.check_license! }.not_to raise_error
+      end
     end
   end
 end

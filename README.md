@@ -26,15 +26,16 @@ bundle add dsfr-assets
 require 'dsfr/assets'
 ```
 
-Après avoir lu les [Modalités d'Utilisation](https://github.com/GouvernementFR/dsfr/blob/main/doc/legal/cgu.md), déclarez votre acceptation dans un initializer :
+Après avoir lu les [modalités d'Utilisation](https://github.com/GouvernementFR/dsfr/blob/main/doc/legal/cgu.md), déclarez votre acceptation dans un initializer :
 
 ```ruby
 # config/initializers/dsfr_assets.rb
 
-Dsfr::Assets.accept_license = "1.0.1"
+Dsfr::Assets.accepted_license_version = "1.0.1"
 ```
 
-En intégration continue, vous pouvez utiliser la variable d'environnement `DSFR_ACCEPT_LICENSE=1` à la place.
+En intégration continue, vous pouvez utiliser la variable
+d'environnement `DSFR_ACCEPT_LICENSE=1` à la place.
 
 ## Usage
 
