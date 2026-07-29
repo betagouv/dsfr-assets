@@ -11,6 +11,7 @@ module Dsfr
       initializer "dsfr-assets.paths" do |app|
         app.config.assets.paths << File.expand_path("../../../vendor/assets/stylesheets", __dir__)
         app.config.assets.paths << File.expand_path("../../../vendor/assets/javascripts", __dir__)
+        app.config.assets.paths << File.expand_path("../../../vendor/assets/images", __dir__)
       end
     end
   end
