@@ -53,6 +53,15 @@ Si vous utilisez les icônes/pictogrammes, rajoutez :
 <%= stylesheet_link_tag "utility/dsfr-utility.min", "application-turbo-track": "reload" %>
 ```
 
+Pour les favicons, rajoutez dans le `<head>` :
+
+```erb
+<%= favicon_link_tag asset_path("favicon/favicon.svg"), rel: "icon", type: "image/svg+xml" %>
+<%= favicon_link_tag asset_path("favicon/favicon.ico"), rel: "shortcut icon" %>
+<%= favicon_link_tag asset_path("favicon/apple-touch-icon.png"), rel: "apple-touch-icon" %>
+<link rel="manifest" href="<%= asset_path("favicon/manifest.webmanifest") %>" />
+```
+
 ## Déploiement
 
 Pour déployer il suffit de mettre la bonne version dans `version.rb`
