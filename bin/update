@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+VERSION=${1:?Usage: bin/update <version>}
+TMPDIR=$(mktemp -d)
+REPO_ROOT=$(cd "$(dirname "$0")/.." && pwd)
+
+cleanup() { rm -rf "$TMPDIR"; }
+trap cleanup EXIT
+
+echo "Downloading @gouvfr/dsfr@${VERSION} via npm..."
+npm pack "@gouvfr/dsfr@${VERSION}" --pack-destination "$TMPDIR" --silent
+tar -xzf "$TMPDIR/gouvfr-dsfr-${VERSION}.tgz" -C "$TMPDIR"
+
+DIST="$TMPDIR/package/dist"
+VENDOR="$REPO_ROOT/vendor/assets"
+
+echo "Copying assets..."
+
+cp "$DIST/dsfr.module.min.js"   "$VENDOR/javascripts/dsfr.module.min.js"
+cp "$DIST/dsfr.nomodule.min.js" "$VENDOR/javascripts/dsfr.nomodule.min.js"
+
+cp "$DIST/dsfr.min.css"       "$VENDOR/stylesheets/dsfr.min.css"
+cp "$DIST/dsfr.print.min.css" "$VENDOR/stylesheets/dsfr.print.min.css"
+
+# The utility CSS is renamed
+cp "$DIST/utility/utility.min.css" "$VENDOR/stylesheets/utility/dsfr-utility.min.css"
+
+# Full directory sync for binary/SVG assets
+# --checksum compares by content instead of timestamp, avoiding spurious git changes
+rsync -a --checksum --delete "$DIST/artwork/"  "$VENDOR/stylesheets/artwork/"
+rsync -a --checksum --delete "$DIST/fonts/"    "$VENDOR/stylesheets/fonts/"
+rsync -a --checksum --delete "$DIST/icons/"    "$VENDOR/stylesheets/icons/"
+rsync -a --checksum --delete "$DIST/favicon/"  "$VENDOR/images/favicon/"
+
+echo "Updating version..."
+CGU_VERSION=$(grep -m1 'cguVersion:' "$TMPDIR/package/doc/legal/cgu.md" | sed -E "s/.*cguVersion:[[:space:]]*['\"]?([^'\"[:space:]]+).*/\1/")
+
+sed -i '' "s/^\(  *\)VERSION = \"[^\"]*\"/\1VERSION = \"${VERSION}\"/" \
+  "$REPO_ROOT/lib/dsfr/assets/version.rb"
+
+if [ -n "$CGU_VERSION" ]; then
+  sed -i '' "s/CGU_VERSION = \"[^\"]*\"/CGU_VERSION = \"${CGU_VERSION}\"/" \
+    "$REPO_ROOT/lib/dsfr/assets/version.rb"
+  echo "CGU version: ${CGU_VERSION}"
+else
+  echo "Warning: could not extract CGU version from cgu.md, leaving unchanged" >&2
+fi
+
+echo "Running bundle install..."
+cd "$REPO_ROOT" && mise exec -- bundle install
+
+echo "Done! DSFR updated to ${VERSION}. Don't forget to commit and push."
