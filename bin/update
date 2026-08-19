@@ -48,6 +48,6 @@ else
 fi
 
 echo "Running bundle install..."
-cd "$REPO_ROOT" && mise exec -- bundle install
+cd "$REPO_ROOT" && bundle install
 
 echo "Done! DSFR updated to ${VERSION}. Don't forget to commit and push."
