@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [ "$(uname -s)" != "Darwin" ]; then
+  echo "Error: this script relies on BSD sed (macOS) syntax and hasn't been" >&2
+  echo "adapted for GNU/BusyBox sed. Running it as-is on Linux risks silently" >&2
+  echo "mis-editing lib/dsfr/assets/version.rb. Adapt the 'sed -i' calls first." >&2
+  exit 1
+fi
+
 VERSION=${1:?Usage: bin/update <version>}
 TMPDIR=$(mktemp -d)
 REPO_ROOT=$(cd "$(dirname "$0")/.." && pwd)
