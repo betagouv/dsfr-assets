@@ -2,7 +2,7 @@
 
 module Dsfr
   module Assets
-    VERSION = "1.15.3"
+    VERSION = "1.15.4"
     CGU_VERSION = "1.0.1"
   end
 end
