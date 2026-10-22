@@ -1,5 +1,7 @@
 # Dsfr::Assets
 
+[![Gem Version](https://badge.fury.io/rb/dsfr-assets.svg)](https://badge.fury.io/rb/dsfr-assets)
+
 Cette gem met à disposition les assets du [Système de Design de l'État (DSFR)](https://github.com/GouvernementFR/dsfr).
 
 Le numéro de version correspond aux [versions du DSFR](https://github.com/GouvernementFR/dsfr/releases) embarquées.
